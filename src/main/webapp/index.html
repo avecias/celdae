@@ -61,6 +61,11 @@
         <section id="hero" class="d-flex flex-column">
             <div class="container" data-aos="zoom-in" data-aos-delay="100">
                 <h1>Celda electrolítica</h1>
+                <div class="row">
+                    <div class="col-lg-1">
+                        <h3 class="h3"><button>Iniciar</button></h3>
+                    </div>
+                </div>
                 <br>
                 <!--<p>I'm <span class="typed" data-typed-items="Designer, Developer, Freelancer, Photographer"></span></p>-->
                 <div class="row">
@@ -94,6 +99,7 @@
                             <h3 class="h3">Eje y</h3>
                         </div>
                         <div class="col-lg-10">
+                            <div class="text-center"><button type="submit">Send Message</button></div>
                             <canvas id="myChart1" style="width:100%;max-width:800px"></canvas>
                         </div>
                     </div>
@@ -166,7 +172,8 @@
             setInterval(function () {
                 if (cont <= 15) {
                     console.log('xValues ' + xValues[cont] + ' yValues ' + yValues[cont]);
-                    var xTempValues = xValues.slice(0, cont + 1);
+//                    var xTempValues = xValues.slice(0, cont + 1);
+                    var xTempValues = xValues;
                     var yTempValues = yValues.slice(0, cont + 1);
                     cont++;
                     $("#myChart").empty();
