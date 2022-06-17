@@ -13,6 +13,7 @@ import java.io.Serializable;
 public class Data implements Serializable {
 
     private int idData;
+    private double value;
 
     public Data() {
     }
@@ -23,6 +24,14 @@ public class Data implements Serializable {
 
     public void setIdData(int idData) {
         this.idData = idData;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
     }
 
 }

@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>MyResume Bootstrap Template - Index</title>
+        <title>Celdae - Inicio</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -18,6 +18,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- Vendor CSS Files -->
         <link href="assets/vendor/aos/aos.css" rel="stylesheet">
         <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -166,38 +167,58 @@
         <!-- Template Main JS File -->
         <script src="assets/js/main.js"></script>
         <script>
-            var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
-            var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15, 13, 8, 8, 7, 6, 7];
+            const OK = 200;
+            var xValores = [];
+            var yValores = [];
+            for (var i = 0; i < 30; i++) {
+                xValores.push(i);
+            }
             var cont = 0;
             setInterval(function () {
-                if (cont <= 15) {
-                    console.log('xValues ' + xValues[cont] + ' yValues ' + yValues[cont]);
-//                    var xTempValues = xValues.slice(0, cont + 1);
-                    var xTempValues = xValues;
-                    var yTempValues = yValues.slice(0, cont + 1);
-                    cont++;
-                    $("#myChart").empty();
-                    new Chart("myChart", {
-                        type: "line",
-                        data: {
-                            labels: xTempValues,
-                            datasets: [{
-                                    fill: false,
-                                    lineTension: 0,
-                                    backgroundColor: "rgba(0,0,255,1.0)",
-                                    borderColor: "rgba(0,0,255,0.1)",
-                                    data: yTempValues
-                                }]
-                        },
-                        options: {
-                            legend: {display: false},
-                            scales: {
-                                yAxes: [{ticks: {min: 6, max: 16}}]
-                            }
+                if (cont < xValores.length) {
+                    $.ajax({
+                        async: false,
+                        type: "GET",
+                        url: "rest/data/random/"
+                    }).done(function (result) {
+                        if (result.status === OK) {
+//                            Swal.fire("Exito!", result.message, "success");
+                            dibujarGrafica(result.data.value, cont);
+                        } else {
+                            Swal.fire("Error del servidor", result.message, "error");
                         }
+                    }).fail(function () {
+                        Swal.fire("Error del servidor", "Sucedió un error en el servidor, refresque la página o consulte al personal de sistemas", "error");
                     });
+                    cont++;
                 }
-            }, 5 * 1000);
+            }, 60 * 1000);
+
+            // dibujar el resultado
+            function dibujarGrafica(value, index) {
+                yValores.push(value);
+                console.log('xValues ' + xValores[index] + ' yValues ' + value);
+                $("#myChart").empty();
+                new Chart("myChart", {
+                    type: "line",
+                    data: {
+                        labels: xValores,
+                        datasets: [{
+                                fill: false,
+                                lineTension: 0,
+                                backgroundColor: "rgba(0,0,255,1.0)",
+                                borderColor: "rgba(0,0,255,0.1)",
+                                data: yValores
+                            }]
+                    },
+                    options: {
+                        legend: {display: false},
+                        scales: {
+                            yAxes: [{ticks: {min: 0, max: 5}}]
+                        }
+                    }
+                });
+            }
         </script>
 
     </body>
