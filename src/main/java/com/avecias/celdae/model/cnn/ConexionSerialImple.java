@@ -22,7 +22,7 @@ public class ConexionSerialImple implements ConexionSerial, SerialPortEventListe
         mensajeAux = "";
         serialPort = new SerialPort(port);
         serialPort.openPort();
-        serialPort.setParams(9600, 0, 1, 1);
+        serialPort.setParams(9600, 8, 1, 0);
         serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
         serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
     }
