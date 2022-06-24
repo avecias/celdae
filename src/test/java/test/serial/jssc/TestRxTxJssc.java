@@ -4,6 +4,7 @@
  */
 package test.serial.jssc;
 
+import com.avecias.celdae.controller.DataController;
 import com.avecias.celdae.model.cnn.ConexionSerial;
 import com.avecias.celdae.model.cnn.ConexionSerialImple;
 import java.util.logging.Level;
@@ -17,9 +18,9 @@ import jssc.SerialPortException;
 public class TestRxTxJssc {
 
     public static void main(String[] args) {
-        ConexionSerial cnn = new ConexionSerialImple();
+        ConexionSerial cnn = new ConexionSerialImple(new DataController());
         try {
-            cnn.abrir("/dev/tty.usbmodem14101");
+            cnn.abrir("COM4");
             while (true) {
                 Thread.sleep(2000);
                 String msj = cnn.leerMensaje();

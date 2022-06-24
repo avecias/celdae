@@ -13,9 +13,17 @@ import java.io.Serializable;
 public class Data implements Serializable {
 
     private int idData;
-    private double value;
+    private double value1;
+    private double value2;
+    private double value3;
 
     public Data() {
+    }
+
+    public Data(double value1, double value2, double value3) {
+        this.value1 = value1;
+        this.value2 = value2;
+        this.value3 = value3;
     }
 
     public int getIdData() {
@@ -26,12 +34,28 @@ public class Data implements Serializable {
         this.idData = idData;
     }
 
-    public double getValue() {
-        return value;
+    public double getValue1() {
+        return value1;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setValue1(double value1) {
+        this.value1 = value1;
+    }
+
+    public double getValue2() {
+        return value2;
+    }
+
+    public void setValue2(double value2) {
+        this.value2 = value2;
+    }
+
+    public double getValue3() {
+        return value3;
+    }
+
+    public void setValue3(double value3) {
+        this.value3 = value3;
     }
 
 }

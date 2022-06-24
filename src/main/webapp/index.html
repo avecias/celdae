@@ -62,19 +62,18 @@
         <section id="hero" class="d-flex flex-column">
             <div class="container" data-aos="zoom-in" data-aos-delay="100">
                 <h1>Celda electrolítica</h1>
-                <div class="row">
-                    <div class="col-lg-1">
-                        <h3 class="h3"><button>Iniciar</button></h3>
-                    </div>
-                </div>
+                <p>
+                    Parametros:
+                </p>
+                <br>
                 <br>
                 <!--<p>I'm <span class="typed" data-typed-items="Designer, Developer, Freelancer, Photographer"></span></p>-->
                 <div class="row">
                     <div class="col-lg-1">
                         <h3 class="h3">Eje y</h3>
                     </div>
-                    <div class="col-lg-10">
-                        <canvas id="myChart" style="width:100%;max-width:800px"></canvas>
+                    <div class="col-lg-10" id="canvasZone">
+                        <button id="btnIniciar" type="button" class="btn btn-success" onclick="iniciarComunicacion()">Iniciar</button>
                     </div>
                 </div>
                 <div class="row">
@@ -100,7 +99,7 @@
                             <h3 class="h3">Eje y</h3>
                         </div>
                         <div class="col-lg-10">
-                            <div class="text-center"><button type="submit">Send Message</button></div>
+                            <div class="text-center"><button type="submit" onclick="">Send Message</button></div>
                             <canvas id="myChart1" style="width:100%;max-width:800px"></canvas>
                         </div>
                     </div>
@@ -166,60 +165,8 @@
 
         <!-- Template Main JS File -->
         <script src="assets/js/main.js"></script>
-        <script>
-            const OK = 200;
-            var xValores = [];
-            var yValores = [];
-            for (var i = 0; i < 30; i++) {
-                xValores.push(i);
-            }
-            var cont = 0;
-            setInterval(function () {
-                if (cont < xValores.length) {
-                    $.ajax({
-                        async: false,
-                        type: "GET",
-                        url: "rest/data/random/"
-                    }).done(function (result) {
-                        if (result.status === OK) {
-//                            Swal.fire("Exito!", result.message, "success");
-                            dibujarGrafica(result.data.value, cont);
-                        } else {
-                            Swal.fire("Error del servidor", result.message, "error");
-                        }
-                    }).fail(function () {
-                        Swal.fire("Error del servidor", "Sucedió un error en el servidor, refresque la página o consulte al personal de sistemas", "error");
-                    });
-                    cont++;
-                }
-            }, 60 * 1000);
-
-            // dibujar el resultado
-            function dibujarGrafica(value, index) {
-                yValores.push(value);
-                console.log('xValues ' + xValores[index] + ' yValues ' + value);
-                $("#myChart").empty();
-                new Chart("myChart", {
-                    type: "line",
-                    data: {
-                        labels: xValores,
-                        datasets: [{
-                                fill: false,
-                                lineTension: 0,
-                                backgroundColor: "rgba(0,0,255,1.0)",
-                                borderColor: "rgba(0,0,255,0.1)",
-                                data: yValores
-                            }]
-                    },
-                    options: {
-                        legend: {display: false},
-                        scales: {
-                            yAxes: [{ticks: {min: 0, max: 5}}]
-                        }
-                    }
-                });
-            }
-        </script>
+        <!--Index-->
+        <script src="assets/js/index.js"></script>
 
     </body>
 
