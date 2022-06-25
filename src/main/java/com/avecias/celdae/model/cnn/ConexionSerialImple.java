@@ -2,10 +2,14 @@ package com.avecias.celdae.model.cnn;
 
 import com.avecias.celdae.controller.DataController;
 import jssc.SerialPort;
+//import jssc.SerialPortEvent;
+//import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
-public class ConexionSerialImple implements ConexionSerial {
+public class ConexionSerialImple implements ConexionSerial
+        // , SerialPortEventListener 
+{
 
     private SerialPort serialPort;
     private String mensaje;
@@ -60,5 +64,24 @@ public class ConexionSerialImple implements ConexionSerial {
     public static Object[] puertosDisponibles() {
         return SerialPortList.getPortNames();
     }
+
+//    @Override
+//    public void serialEvent(SerialPortEvent event) {
+//        if (event.isRXCHAR()) {
+//            if (event.getEventValue() > 0) {
+//                try {
+//                    String receivedData = serialPort.readString(event.getEventValue());
+//                    mensajeAux += receivedData;
+//                    if (receivedData.contains("\n")) {
+//                        mensaje = mensajeAux;
+//                        mensajeAux = "";
+//                        System.out.println(mensaje);
+//}
+//                } catch (SerialPortException ex) {
+//                    System.out.println("Error in receiving string from COM-port: " + ex);
+//                }
+//            }
+//        }
+//    }
 
 }

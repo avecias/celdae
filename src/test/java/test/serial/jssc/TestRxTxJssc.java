@@ -20,6 +20,7 @@ public class TestRxTxJssc {
     public static void main(String[] args) {
         DataController dataController = new DataController();
         ConexionSerial cnn = new ConexionSerialImple(dataController);
+//        ConexionSerial cnn = new ConexionSerialImple();
         try {
             cnn.abrir("COM3");
             while (true) {
