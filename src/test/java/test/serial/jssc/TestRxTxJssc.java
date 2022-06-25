@@ -18,7 +18,8 @@ import jssc.SerialPortException;
 public class TestRxTxJssc {
 
     public static void main(String[] args) {
-        ConexionSerial cnn = new ConexionSerialImple(new DataController());
+        DataController dataController = new DataController();
+        ConexionSerial cnn = new ConexionSerialImple(dataController);
         try {
             cnn.abrir("COM4");
             while (true) {
