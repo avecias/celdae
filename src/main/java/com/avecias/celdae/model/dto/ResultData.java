@@ -5,9 +5,6 @@
  */
 package com.avecias.celdae.model.dto;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 /**
  *
  * @author aveci
@@ -30,11 +27,6 @@ public class ResultData extends Result {
 
     public void setData(Data data) {
         this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
 }
