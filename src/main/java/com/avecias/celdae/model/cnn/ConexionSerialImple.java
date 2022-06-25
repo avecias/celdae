@@ -43,6 +43,7 @@ public class ConexionSerialImple implements ConexionSerial
 
     @Override
     public String leerMensaje() throws SerialPortException {
+        System.out.println(serialPort.readString());
         mensajeAux = mensaje;
         mensaje = "";
         return mensajeAux;

@@ -26,6 +26,7 @@ void loop() {
   analogWrite(PIN_PWM, outputValue);
   // serializar sensores
   Serial.println(leerSensores());
+  delay(100);
 }
 
 // metodo para leer los tres sensores
