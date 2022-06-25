@@ -21,7 +21,7 @@ public class TestRxTxJssc {
         DataController dataController = new DataController();
         ConexionSerial cnn = new ConexionSerialImple(dataController);
         try {
-            cnn.abrir("COM4");
+            cnn.abrir("COM3");
             while (true) {
                 Thread.sleep(2000);
                 String msj = cnn.leerMensaje();

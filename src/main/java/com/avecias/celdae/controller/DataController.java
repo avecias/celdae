@@ -102,7 +102,7 @@ public class DataController implements SerialPortEventListener {
             if (event.getEventValue() > 0) {
                 try {
                     String mensaje = conexionSerialImple.leerMensaje();
-                    if (mensaje.contains("\n")) {
+                    if (mensaje != null && mensaje.contains("\n")) {
                         System.out.println(mensaje);
                         data = analizador.convertir(mensaje.substring(0, mensaje.length() - 2));
                     }
