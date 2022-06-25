@@ -6,12 +6,15 @@ package com.avecias.celdae.controller;
 
 import com.avecias.celdae.model.cnn.ConexionSerialImple;
 import com.avecias.celdae.model.dto.Data;
+import com.avecias.celdae.model.dto.Result;
 import com.avecias.celdae.model.dto.ResultData;
 import com.avecias.celdae.model.dto.ResultPort;
 import com.avecias.celdae.model.util.Analizador;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
@@ -26,13 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/data")
-public class DataController implements SerialPortEventListener{
+public class DataController implements SerialPortEventListener {
 
     private final Random random = new Random();
     private final double RANGE_MIN = 0.5;
     private final double RANGER_MAX = 0.8;
     private final int OK = 200;
     private final int NULL = 000;
+    private final int ERROR = 500;
     //
     private final Analizador analizador = new Analizador();
     private final ConexionSerialImple conexionSerialImple = new ConexionSerialImple(this);
@@ -77,7 +81,21 @@ public class DataController implements SerialPortEventListener{
         }
         return ports;
     }
-    
+
+    @RequestMapping(value = "/abrir/{port}", method = RequestMethod.GET)
+    public Result abrir(@PathVariable String port) {
+        Result result = new Result(NULL, "puerto aun no abierto");
+//        try {
+//            conexionSerialImple.abrir(port);
+            result.setStatus(OK);
+            result.setMessage("Puerto " + port + " abierto con exito.");
+//        } catch (SerialPortException ex) {
+//            result.setStatus(ERROR);
+//            result.setMessage("Error al intentar abrir el puerto " + port + ".");
+//        }
+        return result;
+    }
+
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.isRXCHAR()) {
@@ -94,7 +112,5 @@ public class DataController implements SerialPortEventListener{
             }
         }
     }
-    
-    
 
 }

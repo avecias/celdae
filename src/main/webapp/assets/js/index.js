@@ -24,12 +24,21 @@ function iniciarComunicacion() {
         showCancelButton: true,
         inputValidator: (value) => {
             return new Promise((resolve) => {
-                console.log("resolve " + resolve);
-                console.log("value " + value);
-                resolve();
-                $("#btnIniciar").html("");
-                $("#canvasZone").html("<canvas id='myChart' style='width:100%;max-width:800px'></canvas>");
-                iniciarGraficar();
+                var r = abrirPuerto(value);
+                console.log("puerto " + value);
+                if (r !== null) {
+                    if (r.status === OK) {
+                        console.log("abrir el puerto");
+                        resolve();
+                        $("#btnIniciar").html("");
+                        $("#canvasZone").html("<canvas id='myChart' style='width:100%;max-width:800px'></canvas>");
+                        iniciarGraficar();
+                    } else {
+                        resolve(r.message);
+                    }
+                }else{
+                    resolve("Error en la conexion");
+                }
             });
         }
     });
@@ -82,6 +91,21 @@ function dibujarGrafica(value, index) {
             }
         }
     });
+}
+
+function abrirPuerto(port) {
+    // peticion para abrir el puerto
+    var r;
+    $.ajax({
+        async: false,
+        type: "GET",
+        url: "rest/data/abrir/" + port
+    }).done(function (result) {
+        r = result;
+    }).fail(function () {
+        r = null;
+    });
+    return r;
 }
 
 $(document).ready({
