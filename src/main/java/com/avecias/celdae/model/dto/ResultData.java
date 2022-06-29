@@ -29,4 +29,10 @@ public class ResultData extends Result {
         this.data = data;
     }
 
+    @Override
+    public String toString() {
+        return "ResultData{" + "data=" + data + '}';
+    }
+
+    
 }
