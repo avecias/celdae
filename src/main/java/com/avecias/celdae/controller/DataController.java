@@ -28,11 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class DataController {
 
     private final Random random = new Random();
-    private final double RANGE_MIN = 0.5;
-    private final double RANGER_MAX = 0.8;
+    private final double RANGE_MIN = 0.0;
+    private final double RANGER_MAX = 1500;
     private final int OK = 200;
     private final int NULL = 000;
     private final int ERROR = 500;
+    //
+    private final double VOLTAJE = 2.5;
     //
     private final Analizador analizador = new Analizador();
     private final ConexionSerialImple cnn = new ConexionSerialImple();
@@ -58,16 +60,33 @@ public class DataController {
 
     @RequestMapping(value = "/rx/", method = RequestMethod.GET)
     public ResultData rx() {
+        String message = "";
         Data d = new Data();
         ResultData result = new ResultData(d, NULL, "nullo");
         String msj = cnn.leerMensaje();
         if (msj != null && msj.contains("\n")) {
-//                    System.out.println(mensaje.substring(0, mensaje.length() - 2));
             d = analizador.convertir(msj.substring(0, msj.length() - 2));
+            // convertir
+            double vi1 = d.getValue1() * 5.0 / 1023.0; // convertir bits en nivel de voltaje1
+            double vi2 = d.getValue2() * 5.0 / 1023.0; // convertir bits en nivel de voltaje1
+            double vi3 = d.getValue3() * 5.0 / 1023.0; // convertir bits en nivel de voltaje1
+            double i = ((vi1 - VOLTAJE) / 0.185) * 1000.00; // colocar en milivolts
+            d.setValue1(i);
+            // value 2
+            d.setValue2(vi2);
+            // value 3
+            d.setValue3(vi3);
+            if (i < 600) {
+                message = "mensaje 1, voltaje = " + vi1;
+            } else if (i == 600 && i < 800) {
+                message = "mensaje 2, voltaje = " + vi1;
+            } else if (i > 800) {
+                message = "mensaje 3, voltaje = " + vi1;
+            }
         }
         result.setData(d);
         result.setStatus(OK);
-        result.setMessage("Numero aleatorio: " + 0.7);
+        result.setMessage(message);
         return result;
     }
 
