@@ -13,10 +13,6 @@ import com.avecias.celdae.model.util.Analizador;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,20 +25,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/data")
-public class DataController 
-        implements SerialPortEventListener 
-{
+public class DataController {
 
     private final Random random = new Random();
-    private final double RANGE_MIN = 0.5;
-    private final double RANGER_MAX = 0.8;
+    private final double RANGE_MIN = 0.0;
+    private final double RANGER_MAX = 1500;
     private final int OK = 200;
     private final int NULL = 000;
     private final int ERROR = 500;
     //
+    private final double VOLTAJE = 2.5;
+    //
     private final Analizador analizador = new Analizador();
-    private final ConexionSerialImple conexionSerialImple = new ConexionSerialImple(this);
-    private Data data;
+    private final ConexionSerialImple cnn = new ConexionSerialImple();
 
     @RequestMapping(value = "/getById/{idData}", method = RequestMethod.GET)
     public Data getById(@PathVariable int idData) {
@@ -65,11 +60,33 @@ public class DataController
 
     @RequestMapping(value = "/rx/", method = RequestMethod.GET)
     public ResultData rx() {
+        String message = "";
         Data d = new Data();
         ResultData result = new ResultData(d, NULL, "nullo");
-        result.setData(data);
+        String msj = cnn.leerMensaje();
+        if (msj != null && msj.contains("\n")) {
+            d = analizador.convertir(msj.substring(0, msj.length() - 2));
+            // convertir
+            double vi1 = d.getValue1() * 5.0 / 1023.0; // convertir bits en nivel de voltaje1
+            double vi2 = d.getValue2() * 5.0 / 1023.0; // convertir bits en nivel de voltaje1
+            double vi3 = d.getValue3() * 5.0 / 1023.0; // convertir bits en nivel de voltaje1
+            double i = ((vi1 - VOLTAJE) / 0.185) * 1000.00; // colocar en milivolts
+            d.setValue1(i);
+            // value 2
+            d.setValue2(vi2);
+            // value 3
+            d.setValue3(vi3);
+            if (i < 600) {
+                message = "mensaje 1, voltaje = " + vi1;
+            } else if (i == 600 && i < 800) {
+                message = "mensaje 2, voltaje = " + vi1;
+            } else if (i > 800) {
+                message = "mensaje 3, voltaje = " + vi1;
+            }
+        }
+        result.setData(d);
         result.setStatus(OK);
-        result.setMessage("Numero aleatorio: " + 0.7);
+        result.setMessage(message);
         return result;
     }
 
@@ -87,32 +104,15 @@ public class DataController
     @RequestMapping(value = "/abrir/{port}", method = RequestMethod.GET)
     public Result abrir(@PathVariable String port) {
         Result result = new Result(NULL, "puerto aun no abierto");
-//        try {
-//            conexionSerialImple.abrir(port);
+        try {
+            cnn.abrir(port);
             result.setStatus(OK);
             result.setMessage("Puerto " + port + " abierto con exito.");
-//        } catch (SerialPortException ex) {
-//            result.setStatus(ERROR);
-//            result.setMessage("Error al intentar abrir el puerto " + port + ".");
-//        }
-        return result;
-    }
-
-    @Override
-    public void serialEvent(SerialPortEvent event) {
-        if (event.isRXCHAR()) {
-            if (event.getEventValue() > 0) {
-                try {
-                    String mensaje = conexionSerialImple.leerMensaje();
-                    if (mensaje != null && mensaje.contains("\n")) {
-                        System.out.println(mensaje);
-                        data = analizador.convertir(mensaje.substring(0, mensaje.length() - 2));
-                    }
-                } catch (SerialPortException ex) {
-                    System.out.println("Error in receiving string from COM-port: " + ex);
-                }
-            }
+        } catch (SerialPortException ex) {
+            result.setStatus(ERROR);
+            result.setMessage("Error al intentar abrir el puerto " + port + "." + ex.toString());
         }
+        return result;
     }
 
 }

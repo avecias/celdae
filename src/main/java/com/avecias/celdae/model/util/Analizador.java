@@ -13,8 +13,7 @@ public class Analizador {
 
     public Data convertir(String linea) {
         if (!isTrama(linea)) {
-            System.out.println(linea);
-            return new Data(-1, -1, -1);
+            return new Data(0, 0, 0);
         }
         return seccionar(linea);
     }
