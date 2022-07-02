@@ -108,6 +108,19 @@ function abrirPuerto(port) {
     return r;
 }
 
-$(document).ready({
+function puertosDisponibles() {
+    $.ajax({
+        type: "GET",
+        url: "rest/data/puertosDisponibles/"
+    }).done(function (list) {
+        for (var i = 0; i < list.length; i++) {
+            console.log(list[i].result.port);
+        }
+    }).fail(function (error) {
+        console.log(error);
+    });
+}
 
+$(document).ready(function (){
+    puertosDisponibles();
 });
