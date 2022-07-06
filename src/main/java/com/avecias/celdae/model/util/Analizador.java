@@ -26,7 +26,9 @@ public class Analizador {
 
     private Data seccionar(String linea) {
         Data data = new Data();
-        String a = "", b = a, c = a;
+        String a = "";
+        String b = "";
+        String c = "";
         int i = 0;
         while (i < linea.length()) {
             switch (linea.charAt(i)) {

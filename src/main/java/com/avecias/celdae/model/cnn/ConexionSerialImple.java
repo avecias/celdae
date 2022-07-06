@@ -1,8 +1,5 @@
 package com.avecias.celdae.model.cnn;
 
-import com.avecias.celdae.controller.DataController;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -56,7 +53,7 @@ public class ConexionSerialImple implements ConexionSerial, SerialPortEventListe
         this.serialPort = serialPort;
     }
 
-    public static Object[] puertosDisponibles() {
+    public Object[] puertosDisponibles() {
         return SerialPortList.getPortNames();
     }
 

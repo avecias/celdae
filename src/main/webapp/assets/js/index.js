@@ -32,19 +32,16 @@ function iniciarComunicacion() {
                     if (r.status === OK) {
                         console.log("abrir el puerto");
                         resolve();
-                        $("#btnIniciar").html("");
-                        $("#canvasZone").html("<canvas id='myChart' style='width:100%;max-width:800px'></canvas>");
                         iniciarGraficar();
                     } else {
                         resolve(r.message);
                     }
-                }else{
+                } else {
                     resolve("Error en la conexion");
                 }
             });
         }
     });
-
 }
 
 function iniciarGraficar() {
@@ -57,7 +54,7 @@ function iniciarGraficar() {
                 url: "rest/data/rx/"
             }).done(function (result) {
                 if (result.status === OK) {
-                    dibujarGrafica(result.data.value1, cont);
+                    dibujarGrafica1(result.data.value1, cont);
                     dibujarGrafica2(result.data.value2, cont);
                     dibujarGrafica3(result.data.value3, cont);
                 } else {
@@ -72,11 +69,11 @@ function iniciarGraficar() {
 }
 
 // dibujar el resultado 1
-function dibujarGrafica(value, index) {
+function dibujarGrafica1(value, index) {
     yValores.push(value);
     console.log('xValues ' + xValores[index] + ' yValues ' + value);
-    $("#myChart").empty();
-    new Chart("myChart", {
+    $("#myChart1").empty();
+    new Chart("myChart1", {
         type: "line",
         data: {
             labels: xValores,
@@ -164,6 +161,21 @@ function abrirPuerto(port) {
     return r;
 }
 
+function cerrarLimpiar() {
+    $.ajax({
+        type: "GET",
+        url: "rest/data/cerrarLimpiar/"
+    }).done(function (result) {
+        if (result.status === OK) {
+            console.log("cerrado con exito");
+        } else {
+            console.log(result.message);
+        }
+    }).fail(function (error) {
+        console.log(error);
+    });
+}
+
 function puertosDisponibles() {
     $.ajax({
         type: "GET",
@@ -177,6 +189,12 @@ function puertosDisponibles() {
     });
 }
 
-$(document).ready(function (){
+function dontClose() {
+    console.log("antes de salir");
+    return "Write something clever here...";
+}
+
+$(document).ready(function () {
     puertosDisponibles();
+
 });

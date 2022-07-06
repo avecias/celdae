@@ -38,6 +38,8 @@ public class DataController {
     //
     private final Analizador analizador = new Analizador();
     private final ConexionSerialImple cnn = new ConexionSerialImple();
+    // resultados
+    private List<Data> datas;
 
     @RequestMapping(value = "/getById/{idData}", method = RequestMethod.GET)
     public Data getById(@PathVariable int idData) {
@@ -79,10 +81,14 @@ public class DataController {
             if (i < 600) {
                 message = "mensaje 1, voltaje = " + vi1;
             } else if (i == 600 && i < 800) {
-                message = "mensaje 2, voltaje = " + vi1;
+                message = "mensaje 2, voltaje = " + vi2;
             } else if (i > 800) {
-                message = "mensaje 3, voltaje = " + vi1;
+                message = "mensaje 3, voltaje = " + vi3;
             }
+        }
+        // guardar resultado
+        if (datas != null) {
+            datas.add(d);
         }
         result.setData(d);
         result.setStatus(OK);
@@ -93,7 +99,7 @@ public class DataController {
     @RequestMapping(value = "/puertosDisponibles/", method = RequestMethod.GET)
     public List<ResultPort> puertosDisponibles() {
         List<ResultPort> ports = new ArrayList<>();
-        Object[] puertosDisponibles = ConexionSerialImple.puertosDisponibles();
+        Object[] puertosDisponibles = cnn.puertosDisponibles();
         for (Object puertosDisponible : puertosDisponibles) {
             ResultPort result = new ResultPort("" + puertosDisponible, NULL, "nullo");
             ports.add(result);
@@ -106,12 +112,28 @@ public class DataController {
         Result result = new Result(NULL, "puerto aun no abierto");
         try {
             cnn.abrir(port);
+            datas = new ArrayList<>();
             result.setStatus(OK);
             result.setMessage("Puerto " + port + " abierto con exito.");
         } catch (SerialPortException ex) {
             result.setStatus(ERROR);
             result.setMessage("Error al intentar abrir el puerto " + port + "." + ex.toString());
         }
+        return result;
+    }
+    
+    @RequestMapping(value = "/cerrarLimpiar/", method = RequestMethod.GET)
+    public Result cerrarLimpiar() {
+        Result result = new Result(NULL, "puerto aun no abierto");
+//        try {
+//            cnn.abrir(port);
+//            datas = new ArrayList<>();
+//            result.setStatus(OK);
+//            result.setMessage("Puerto " + port + " abierto con exito.");
+//        } catch (SerialPortException ex) {
+//            result.setStatus(ERROR);
+//            result.setMessage("Error al intentar abrir el puerto " + port + "." + ex.toString());
+//        }
         return result;
     }
 

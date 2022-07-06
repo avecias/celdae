@@ -38,7 +38,7 @@
         ======================================================== -->
     </head>
 
-    <body>
+    <body onbeforeunload="return dontClose()">
         <!-- ======= Mobile nav toggle button ======= -->
         <!-- <button type="button" class="mobile-nav-toggle d-xl-none"><i class="bi bi-list mobile-nav-toggle"></i></button> -->
         <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
@@ -61,11 +61,18 @@
         <!-- ======= Hero Section ======= -->
         <section id="hero" class="d-flex flex-column">
             <div class="container" data-aos="zoom-in" data-aos-delay="100">
-                <h1>Celda electrolítica</h1>
-                <p>
-                    Parametros:
-                </p>
-                <br>
+                <h2>Celda electrolítica</h2>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <button id="btnIniciar" type="button" class="btn btn-success" onclick="iniciarComunicacion()">Iniciar</button>
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="button" class="btn btn-info" disabled="disabled">Reporte</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4>Parametros</h4>
+                    </div>
+                </div> 
                 <br>
                 <!--<p>I'm <span class="typed" data-typed-items="Designer, Developer, Freelancer, Photographer"></span></p>-->
                 <div class="row">
@@ -73,7 +80,7 @@
                         <h3 class="h3">Eje y</h3>
                     </div>
                     <div class="col-lg-10" id="canvasZone">
-                        <button id="btnIniciar" type="button" class="btn btn-success" onclick="iniciarComunicacion()">Iniciar</button>
+                        <canvas id="myChart1" style="width:100%;max-width:800px"></canvas>
                     </div>
                 </div>
                 <div class="row">
@@ -81,13 +88,6 @@
                     </div>
                     <div class="col-lg-4">
                         <h3 class="h3">Eje x</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                    </div>
-                    <div class="col-lg-4">
-                        <button type="button" class="btn btn-info">Reporte</button>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,6 @@
                             <h3 class="h3">Eje y</h3>
                         </div>
                         <div class="col-lg-10">
-                            <div class="text-center"><button type="submit" onclick="">Send Message</button></div>
                             <canvas id="myChart2" style="width:100%;max-width:800px"></canvas>
                         </div>
                     </div>
