@@ -10,10 +10,21 @@ import com.avecias.celdae.model.dto.Result;
 import com.avecias.celdae.model.dto.ResultData;
 import com.avecias.celdae.model.dto.ResultPort;
 import com.avecias.celdae.model.util.Analizador;
+import com.opencsv.CSVWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import jssc.SerialPortException;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -121,20 +132,52 @@ public class DataController {
         }
         return result;
     }
-    
+
     @RequestMapping(value = "/cerrarLimpiar/", method = RequestMethod.GET)
     public Result cerrarLimpiar() {
         Result result = new Result(NULL, "puerto aun no abierto");
-//        try {
-//            cnn.abrir(port);
-//            datas = new ArrayList<>();
-//            result.setStatus(OK);
-//            result.setMessage("Puerto " + port + " abierto con exito.");
-//        } catch (SerialPortException ex) {
-//            result.setStatus(ERROR);
-//            result.setMessage("Error al intentar abrir el puerto " + port + "." + ex.toString());
-//        }
+        try {
+            cnn.cerrar();
+            datas = new ArrayList<>();
+            result.setStatus(OK);
+            result.setMessage("Puerto cerrado con exito.");
+        } catch (SerialPortException ex) {
+            result.setStatus(ERROR);
+            result.setMessage("Error al intentar cerrar el puerto " + ex.toString());
+        }
         return result;
+    }
+
+    @RequestMapping(value = "/descargarExcel/", method = RequestMethod.GET)
+    public void cierreMes(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<String[]> paises = new ArrayList();
+            paises.add(new String[]{"Afghanistan", "AF", "AFG", "4", "Yes"});
+            paises.add(new String[]{"Spain", "ES", "ESP", "724", "Yes"});
+            
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(baos);
+            CSVWriter csvw = new CSVWriter(osw);
+            csvw.writeAll(paises);
+            csvw.close();
+            //
+            InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+            // modifies response
+            response.setContentType("application/octet-stream");
+            response.setContentLength(baos.size());
+            baos.close();
+            // forces download
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"", "Reporte.csv");
+            response.setHeader(headerKey, headerValue);
+            // 
+            StreamUtils.copy(inputStream, response.getOutputStream());
+            StreamUtils.drain(inputStream);
+        }  catch (IOException ex) {
+            System.err.println("Error en I/O" + ex);
+        } catch (Exception ex) {
+            System.err.println("Error" + ex);
+        }
     }
 
 }

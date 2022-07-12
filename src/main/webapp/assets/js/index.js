@@ -191,7 +191,12 @@ function puertosDisponibles() {
 
 function dontClose() {
     console.log("antes de salir");
-    return "Write something clever here...";
+    cerrarLimpiar();
+    return "bye...";
+}
+
+function exportarExcel() {
+    window.open("rest/data/descargarExcel/");
 }
 
 $(document).ready(function () {
