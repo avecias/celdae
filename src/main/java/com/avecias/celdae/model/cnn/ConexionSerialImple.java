@@ -42,7 +42,7 @@ public class ConexionSerialImple implements ConexionSerial, SerialPortEventListe
 
     @Override
     public boolean estaAbierto() {
-        return serialPort != null;
+        return serialPort != null && serialPort.isOpened();
     }
 
     public SerialPort getSerialPort() {

@@ -15,10 +15,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int corriente = analogRead(SENSOR_B);
-  int outputValue = map(corriente, 0, 1023, 0, 255);
+  int rv = analogRead(SENSOR_C); // potenciometro como regulador de voltaje
+  int voltajeSalida = map(rv, 0, 1023, 0, 255);
   // salida de  voltaje
-  analogWrite(PIN_PWM, outputValue);
+  analogWrite(PIN_PWM, voltajeSalida);
   // serializar sensores
   Serial.println(leerSensores());
   delay(100);

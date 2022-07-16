@@ -107,6 +107,19 @@ public class DataController {
         return result;
     }
 
+    @RequestMapping(value = "/estaAbierto/", method = RequestMethod.GET)
+    public Result estaAbierto() {
+        Result result = new Result(NULL, "puerto aun no abierto");
+        if (cnn.estaAbierto()) {
+            result.setStatus(OK);
+            result.setMessage("Conexion abierta.");
+        } else {
+            result.setStatus(NULL);
+            result.setMessage("Conexion cerrada.");
+        }
+        return result;
+    }
+
     @RequestMapping(value = "/puertosDisponibles/", method = RequestMethod.GET)
     public List<ResultPort> puertosDisponibles() {
         List<ResultPort> ports = new ArrayList<>();
@@ -137,7 +150,9 @@ public class DataController {
     public Result cerrarLimpiar() {
         Result result = new Result(NULL, "puerto aun no abierto");
         try {
-            cnn.cerrar();
+            if (cnn.estaAbierto()) {
+                cnn.cerrar();
+            }
             datas = new ArrayList<>();
             result.setStatus(OK);
             result.setMessage("Puerto cerrado con exito.");
@@ -151,14 +166,14 @@ public class DataController {
     @RequestMapping(value = "/descargarExcel/", method = RequestMethod.GET)
     public void cierreMes(HttpServletRequest request, HttpServletResponse response) {
         try {
-            List<String[]> paises = new ArrayList();
-            paises.add(new String[]{"Afghanistan", "AF", "AFG", "4", "Yes"});
-            paises.add(new String[]{"Spain", "ES", "ESP", "724", "Yes"});
-            
+            List<String[]> datos = new ArrayList();
+            for (Data data : datas) {
+                datos.add(new String[]{"" + data.getValue1(), "" + data.getValue2(), "" + data.getValue3()});
+            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(baos);
             CSVWriter csvw = new CSVWriter(osw);
-            csvw.writeAll(paises);
+            csvw.writeAll(datos);
             csvw.close();
             //
             InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
@@ -173,7 +188,7 @@ public class DataController {
             // 
             StreamUtils.copy(inputStream, response.getOutputStream());
             StreamUtils.drain(inputStream);
-        }  catch (IOException ex) {
+        } catch (IOException ex) {
             System.err.println("Error en I/O" + ex);
         } catch (Exception ex) {
             System.err.println("Error" + ex);

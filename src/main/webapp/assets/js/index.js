@@ -6,7 +6,7 @@
 
 const OK = 200;
 
-var ports = {COM3: "COM3", COM4: "COM4", COM5: "COM5"};
+var ports;
 
 var xValores = [];
 var yValores = [];
@@ -64,6 +64,9 @@ function iniciarGraficar() {
                 Swal.fire("Error del servidor", "Sucedió un error en el servidor, refresque la página o consulte al personal de sistemas", "error");
             });
             cont++;
+        }else{
+            // activar el boton de reporte
+            
         }
     }, 60 * 1000);
 }
@@ -161,6 +164,21 @@ function abrirPuerto(port) {
     return r;
 }
 
+function estaAbierto() {
+    $.ajax({
+        type: "GET",
+        url: "rest/data/estaAbierto/"
+    }).done(function (result) {
+        if (result.status === OK) {
+            console.log(result.message);
+        } else {
+            console.log(result.message);
+        }
+    }).fail(function (error) {
+        console.log(error);
+    });
+}
+
 function cerrarLimpiar() {
     $.ajax({
         type: "GET",
@@ -181,9 +199,15 @@ function puertosDisponibles() {
         type: "GET",
         url: "rest/data/puertosDisponibles/"
     }).done(function (list) {
+//        var ps = '{"COM2":"COM2", "COM3":"COM3", "COM4":"COM4"}';
+        var ps = '{';
         for (var i = 0; i < list.length; i++) {
-            console.log(list[i].result.port);
+            ps += '"' + list[i].port + '":"' + list[i].port + '",';
         }
+        if (list.length > 0) {
+            ps = ps.substring(0, ps.length - 1);
+        }
+        ports = JSON.parse(ps + '}');
     }).fail(function (error) {
         console.log(error);
     });
@@ -200,6 +224,6 @@ function exportarExcel() {
 }
 
 $(document).ready(function () {
+    estaAbierto();
     puertosDisponibles();
-
 });
