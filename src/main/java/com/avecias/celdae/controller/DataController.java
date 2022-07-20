@@ -48,7 +48,7 @@ public class DataController {
     private final double VOLTAJE = 2.5;
     //
     private final Analizador analizador = new Analizador();
-    private final ConexionSerialImple cnn = new ConexionSerialImple();
+    private ConexionSerialImple cnn;
     // resultados
     private List<Data> datas;
 
@@ -112,10 +112,10 @@ public class DataController {
         Result result = new Result(NULL, "puerto aun no abierto");
         if (cnn.estaAbierto()) {
             result.setStatus(OK);
-            result.setMessage("Conexion abierta.");
+            result.setMessage("Conexión ocupada.");
         } else {
             result.setStatus(NULL);
-            result.setMessage("Conexion cerrada.");
+            result.setMessage("Conexión disponible.");
         }
         return result;
     }
@@ -135,6 +135,7 @@ public class DataController {
     public Result abrir(@PathVariable String port) {
         Result result = new Result(NULL, "puerto aun no abierto");
         try {
+            cnn = new ConexionSerialImple();
             cnn.abrir(port);
             datas = new ArrayList<>();
             result.setStatus(OK);
@@ -154,6 +155,23 @@ public class DataController {
                 cnn.cerrar();
             }
             datas = new ArrayList<>();
+            cnn = new ConexionSerialImple();
+            result.setStatus(OK);
+            result.setMessage("Puerto cerrado con exito.");
+        } catch (SerialPortException ex) {
+            result.setStatus(ERROR);
+            result.setMessage("Error al intentar cerrar el puerto " + ex.toString());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/cerrar/", method = RequestMethod.GET)
+    public Result cerrar() {
+        Result result = new Result(NULL, "puerto aun no abierto");
+        try {
+            if (cnn.estaAbierto()) {
+                cnn.cerrar();
+            }
             result.setStatus(OK);
             result.setMessage("Puerto cerrado con exito.");
         } catch (SerialPortException ex) {

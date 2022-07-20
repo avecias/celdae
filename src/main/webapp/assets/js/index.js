@@ -26,18 +26,24 @@ function iniciarComunicacion() {
         showCancelButton: true,
         inputValidator: (value) => {
             return new Promise((resolve) => {
-                var r = abrirPuerto(value);
-                console.log("puerto " + value);
-                if (r !== null) {
-                    if (r.status === OK) {
-                        console.log("abrir el puerto");
-                        resolve();
-                        iniciarGraficar();
+                if (value) {
+                    var r = abrirPuerto(value);
+                    console.log("puerto " + value);
+                    if (r !== null) {
+                        if (r.status === OK) {
+                            console.log("abrir el puerto");
+                            $("#btnIniciar").prop("disabled", true);
+                            $("#btnReporte").prop("disabled", false);
+                            resolve();
+                            iniciarGraficar();
+                        } else {
+                            resolve(r.message);
+                        }
                     } else {
-                        resolve(r.message);
+                        resolve("Error en la conexion");
                     }
                 } else {
-                    resolve("Error en la conexion");
+                    resolve("Ningún puerto seleccionado.");
                 }
             });
         }
@@ -64,9 +70,11 @@ function iniciarGraficar() {
                 Swal.fire("Error del servidor", "Sucedió un error en el servidor, refresque la página o consulte al personal de sistemas", "error");
             });
             cont++;
-        }else{
+        } else {
             // activar el boton de reporte
-            
+            $("#btnIniciar").prop("disabled", true);
+            $("#btnReporte").prop("disabled", false);
+            cerrarConexion();
         }
     }, 60 * 1000);
 }
@@ -170,8 +178,10 @@ function estaAbierto() {
         url: "rest/data/estaAbierto/"
     }).done(function (result) {
         if (result.status === OK) {
+            $("#state").html('<button type="button" class="btn btn-outline-warning">' + result.message + '</button>');
             console.log(result.message);
         } else {
+            $("#state").html('<button type="button" class="btn btn-outline-success">' + result.message + '</button>');
             console.log(result.message);
         }
     }).fail(function (error) {
@@ -183,6 +193,21 @@ function cerrarLimpiar() {
     $.ajax({
         type: "GET",
         url: "rest/data/cerrarLimpiar/"
+    }).done(function (result) {
+        if (result.status === OK) {
+            console.log("cerrado con exito");
+        } else {
+            console.log(result.message);
+        }
+    }).fail(function (error) {
+        console.log(error);
+    });
+}
+
+function cerrarConexion() {
+    $.ajax({
+        type: "GET",
+        url: "rest/data/cerrar/"
     }).done(function (result) {
         if (result.status === OK) {
             console.log("cerrado con exito");
